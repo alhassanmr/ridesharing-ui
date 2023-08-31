@@ -1,5 +1,28 @@
 <div class="container">
   <header class="jumbotron">
-    <p>{{ content }}</p>
+    <h1>Customer</h1> <strong>{{ currentUser.id }}</strong> Profile
   </header>
+
+  <google-map
+    height="600px"
+    width="100%"
+    [center]="center"
+    [zoom]="zoom"
+    (mapClick)="moveMap($event)"
+    (mapMousemove)="move($event)"
+  >
+    <map-marker
+      *ngFor="let marker of markers"
+      [position]="marker"
+      [options]="markerOptions"
+    >
+    </map-marker>
+  </google-map>
+
+  <button class="btn btn-primary btn-lg" (click)="requestRide()">
+    Request Ride
+  </button>
+
+  <div>Latitude: {{ display?.lat }}</div>
+  <div>Longitude: {{ display?.lng }}</div>
 </div>
