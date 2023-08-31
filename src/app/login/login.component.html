@@ -46,20 +46,23 @@
           </div>
         </div>
       </div>
+
       <div class="form-group">
-        <button class="btn btn-primary btn-block">
-          Login
-        </button>
+        <button class="btn btn-primary btn-block">Login</button>
       </div>
       <div class="form-group">
-        <div *ngIf="f.submitted && isLoginFailed" class="alert alert-danger" role="alert">
+        <div
+          *ngIf="f.submitted && isLoginFailed"
+          class="alert alert-danger"
+          role="alert"
+        >
           Login failed: {{ errorMessage }}
         </div>
       </div>
     </form>
 
     <div class="alert alert-success" *ngIf="isLoggedIn">
-      Logged in as {{ roles }}.
+      {{ username }} Logged in as {{ role }}.
     </div>
   </div>
 </div>

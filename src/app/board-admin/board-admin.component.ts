@@ -1,33 +1,37 @@
 import { Component, OnInit } from '@angular/core';
-import { UserService } from '../_services/user.service';
+import { AuthService } from '../_services/auth.service';
 
 @Component({
   selector: 'app-board-admin',
   templateUrl: './board-admin.component.html',
-  styleUrls: ['./board-admin.component.css']
+  styleUrls: ['./board-admin.component.css'],
 })
-export class BoardAdminComponent implements OnInit {
-  content?: string;
+export class BoardAdminComponent {
+  form: any = {
+    username: null,
+    email: null,
+    password: null,
+    roleType: null
+  };
+  isSuccessful = false;
+  isSignUpFailed = false;
+  errorMessage = '';
 
-  constructor(private userService: UserService) { }
+  constructor(private authService: AuthService) {}
 
-  ngOnInit(): void {
-    this.userService.getAdminBoard().subscribe({
-      next: data => {
-        this.content = data;
+  onSubmit(): void {
+    const { username, email, password, roleType } = this.form;
+
+    this.authService.registerAdmin(username, email, password, roleType).subscribe({
+      next: (data) => {
+        console.log(data);
+        this.isSuccessful = true;
+        this.isSignUpFailed = false;
       },
-      error: err => {
-        if (err.error) {
-          try {
-            const res = JSON.parse(err.error);
-            this.content = res.message;
-          } catch {
-            this.content = `Error with status: ${err.status} - ${err.statusText}`;
-          }
-        } else {
-          this.content = `Error with status: ${err.status}`;
-        }
-      }
+      error: (err) => {
+        this.errorMessage = err.error.message;
+        this.isSignUpFailed = true;
+      },
     });
   }
 }
