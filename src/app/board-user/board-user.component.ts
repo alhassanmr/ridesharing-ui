@@ -2,12 +2,14 @@ import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { UserService } from '../_services/user.service';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { StorageService } from '../_services/storage.service';
+import { ViewChild, ElementRef } from '@angular/core';
 
 interface CustomMarker {
   lat: number;
   lng: number;
   draggable: boolean;
   label: string;
+  icon?: string;
 }
 
 @Component({
@@ -37,6 +39,16 @@ export class BoardUserComponent implements OnInit, AfterViewInit {
   ) {}
   ngOnInit(): void {
     this.currentUser = this.storageService.getUser();
+    this.userService.getActiveDrivers().subscribe((drivers) => {
+      this.markers = drivers.map((driver, index) => {
+        return {
+          lat: parseFloat(driver.latitude),
+          lng: parseFloat(driver.longitude),
+          draggable: false,
+          label: `Driver ${index + 1}`,
+        };
+      });
+    });
   }
 
   ngAfterViewInit(): void {
