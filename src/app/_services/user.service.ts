@@ -27,4 +27,8 @@ export class UserService {
     const url = `${API_URL}users/${userId}/status`;
     return this.http.put(url, { is_active: isActive });
   }
+
+  getActiveDrivers(): Observable<any[]> {
+    return this.http.get<any[]>(`${API_URL}drivers/activealldrivers`);
+  }
 }

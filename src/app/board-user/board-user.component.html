@@ -1,6 +1,7 @@
 <div class="container">
   <header class="jumbotron">
-    <h1>Customer</h1> <strong>{{ currentUser.id }}</strong> Profile
+    <h1>Customer</h1>
+    <strong>{{ currentUser.id }}</strong> Profile
   </header>
 
   <google-map
@@ -13,8 +14,11 @@
   >
     <map-marker
       *ngFor="let marker of markers"
-      [position]="marker"
-      [options]="markerOptions"
+      [position]="{ lat: marker.lat, lng: marker.lng }"
+      [options]="{
+        icon: marker.icon,
+        label: { text: marker.label, color: 'black' }
+      }"
     >
     </map-marker>
   </google-map>
