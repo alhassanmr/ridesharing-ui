@@ -85,7 +85,8 @@ export class BoardUserComponent implements OnInit, AfterViewInit {
       this.userService
         .requestRide(
           JSON.stringify(this.markers[0]),
-          JSON.stringify(this.markers[1])
+          JSON.stringify(this.markers[1]),
+          this.currentUser.id
         )
         .subscribe(
           (res) => {

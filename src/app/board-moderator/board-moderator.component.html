@@ -1,7 +1,17 @@
 <div class="container">
   <header class="jumbotron">
-    <h1>Driver</h1> <strong>{{ currentUser.id }}</strong> Profile
+    <h1>Driver</h1>
+    Username:<strong>{{ currentUser.username }}</strong> Profile
   </header>
+
+  <!-- board-moderator.component.html -->
+  <button
+    [ngClass]="isDriverAvailable ? 'available' : 'unavailable'"
+    (click)="toggleDriverStatus()"
+  >
+    {{ isDriverAvailable ? "Available" : "Unavailable" }}
+  </button>
+
   <google-map
     height="600px"
     width="100%"
@@ -13,6 +23,7 @@
       *ngFor="let markerPosition of markerPositions"
       [position]="markerPosition"
       [options]="markerOptions"
-    ></map-marker>
+    >
+    </map-marker>
   </google-map>
 </div>
