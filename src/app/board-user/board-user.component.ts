@@ -41,6 +41,7 @@ export class BoardUserComponent implements OnInit, AfterViewInit {
     this.currentUser = this.storageService.getUser();
     this.userService.getActiveDrivers().subscribe((drivers) => {
       this.markers = drivers.map((driver, index) => {
+        console.log(driver);
         return {
           lat: parseFloat(driver.latitude),
           lng: parseFloat(driver.longitude),

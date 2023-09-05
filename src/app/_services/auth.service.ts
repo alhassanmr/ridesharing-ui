@@ -26,26 +26,37 @@ export class AuthService {
     );
   }
 
-  register(username: string, email: string, password: string): Observable<any> {
+  register(
+    username: string,
+    email: string,
+    password: string,
+    roleType: string
+  ): Observable<any> {
     return this.http.post(
       AUTH_API + 'signup',
       {
         username,
         email,
         password,
+        roleType,
       },
       httpOptions
     );
   }
 
-  registerAdmin(username: string, email: string, password: string, roleType: string): Observable<any> {
+  registerAdmin(
+    username: string,
+    email: string,
+    password: string,
+    roleType: string
+  ): Observable<any> {
     return this.http.post(
       AUTH_API + 'signup',
       {
         username,
         email,
         password,
-        roleType
+        roleType,
       },
       httpOptions
     );
