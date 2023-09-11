@@ -31,4 +31,34 @@ export class UserService {
   getActiveDrivers(): Observable<any[]> {
     return this.http.get<any[]>(`${API_URL}drivers/activealldrivers`);
   }
+
+  getAllDrivers(): Observable<any> {
+    return this.http.get(API_URL + `drivers`);
+  }
+
+  getAllCustomers(): Observable<any> {
+    return this.http.get(API_URL + `customers`);
+  }
+
+  getUserRides(userId: string): Observable<any> {
+    return this.http.get(API_URL + `ride-requests/customer/${userId}/ride`);
+  }
+
+  getDriverRides(driverId: number): Observable<any[]> {
+    return this.http.get<any[]>(API_URL + `drivers/${driverId}/rides`);
+  }
+
+  confirmDriverRide(rideId: number) {
+    return this.http.post(
+      API_URL + `ride-requests/driver/${rideId}/confirm`,
+      {}
+    );
+  }
+
+  confirmRideStatus(rideId: number): Observable<any> {
+    return this.http.post(
+      API_URL + `ride-requests/customer/${rideId}/confirm`,
+      {}
+    );
+  }
 }

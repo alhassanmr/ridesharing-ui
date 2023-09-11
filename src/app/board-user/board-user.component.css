@@ -5,3 +5,16 @@
 .destination-label {
   color: blue;
 }
+
+.list-group-item {
+  border-radius: 5px;
+  margin-bottom: 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.badge {
+  padding: 5px 10px;
+  font-size: 1rem;
+}
