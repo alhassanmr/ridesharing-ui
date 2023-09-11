@@ -1,29 +1,68 @@
 <div class="container">
   <header class="jumbotron">
     <h1>Driver</h1>
-    Username:<strong>{{ currentUser.username }}</strong> Profile
+    Username: <strong>{{ currentUser.username }}</strong> Profile
   </header>
 
-  <!-- board-moderator.component.html -->
+  <!-- Driver Availability Toggle -->
   <button
+    class="btn"
     [ngClass]="isDriverAvailable ? 'available' : 'unavailable'"
     (click)="toggleDriverStatus()"
   >
     {{ isDriverAvailable ? "Available" : "Unavailable" }}
   </button>
 
-  <google-map
-    height="600px"
-    width="100%"
-    [center]="center"
-    [zoom]="zoom"
-    (mapClick)="addMarker($event)"
-  >
-    <map-marker
-      *ngFor="let markerPosition of markerPositions"
-      [position]="markerPosition"
-      [options]="markerOptions"
-    >
-    </map-marker>
-  </google-map>
+  <div class="row mt-4">
+    <!-- Google Map -->
+    <div class="col-md-8">
+      <google-map
+        height="600px"
+        width="100%"
+        [center]="center"
+        [zoom]="zoom"
+        (mapClick)="addMarker($event)"
+      >
+        <map-marker
+          *ngFor="let markerPosition of markerPositions"
+          [position]="markerPosition"
+          [options]="markerOptions"
+        >
+        </map-marker>
+      </google-map>
+    </div>
+
+    <!-- Driver Rides List -->
+    <div class="col-md-4">
+      <div class="rides-list">
+        <h3>Driver Rides</h3>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Rider</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let ride of driverRides">
+              <td>{{ ride.customer.username }}</td>
+              <td>
+                {{ ride.status }}
+              </td>
+              <td>
+                <button
+                  *ngIf="ride.status === 'CONFIRMED'"
+                  class="btn btn-primary"
+                  (click)="confirmRide(ride.id)"
+                >
+                  Confirm
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
 </div>

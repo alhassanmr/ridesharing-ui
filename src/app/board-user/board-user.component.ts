@@ -2,7 +2,6 @@ import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { UserService } from '../_services/user.service';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { StorageService } from '../_services/storage.service';
-import { ViewChild, ElementRef } from '@angular/core';
 
 interface CustomMarker {
   lat: number;
@@ -10,6 +9,16 @@ interface CustomMarker {
   draggable: boolean;
   label: string;
   icon?: string;
+}
+
+interface Ride {
+  id: number;
+  startTime: string;
+  dropOffLocation: string;
+  status: string;
+  driver: {
+    username: string;
+  };
 }
 
 @Component({
@@ -20,6 +29,7 @@ interface CustomMarker {
 export class BoardUserComponent implements OnInit, AfterViewInit {
   zoom = 14;
   markers: CustomMarker[] = [];
+  userRides: Ride[] = [];
   map?: google.maps.Map;
   display: google.maps.LatLngLiteral | undefined;
   center: google.maps.LatLngLiteral = {
@@ -32,23 +42,37 @@ export class BoardUserComponent implements OnInit, AfterViewInit {
   };
 
   currentUser: any;
+
   constructor(
     private storageService: StorageService,
     private userService: UserService,
     private http: HttpClient
   ) {}
+
   ngOnInit(): void {
     this.currentUser = this.storageService.getUser();
+
     this.userService.getActiveDrivers().subscribe((drivers) => {
-      this.markers = drivers.map((driver, index) => {
+      this.markers = drivers.map((driver) => {
         return {
           lat: parseFloat(driver.latitude),
           lng: parseFloat(driver.longitude),
           draggable: false,
-          label: `Driver ${index + 1}`,
+          label: driver.username,
         };
       });
     });
+
+    // Fetch user rides
+    this.userService.getUserRides(this.currentUser.id).subscribe(
+      (rides: Ride[]) => {
+        console.log(rides);
+        this.userRides = rides;
+      },
+      (error: HttpErrorResponse) => {
+        console.error('Error fetching user rides:', error);
+      }
+    );
   }
 
   ngAfterViewInit(): void {
@@ -105,11 +129,11 @@ export class BoardUserComponent implements OnInit, AfterViewInit {
             console.log('api response: ' + JSON.stringify(res));
             alert('Ride created.');
             console.log('api response: ' + JSON.stringify(res));
+            location.reload();
           },
           (error: HttpErrorResponse) => {
             console.error('An error occurred:', error);
             let errorMessage = 'An error occurred';
-
             if (error.status === 404) {
               errorMessage = 'Driver not found';
             } else if (error.status === 400) {
@@ -119,5 +143,20 @@ export class BoardUserComponent implements OnInit, AfterViewInit {
           }
         );
     }
+  }
+
+  confirmRide(rideId: number) {
+    this.userService.confirmRideStatus(rideId).subscribe({
+      next: (response) => {
+        console.log('Ride confirmed successfully', response);
+        window.alert('Ride confirmed successfully');
+        // Reload the current page after confirming the ride
+        window.location.reload();
+      },
+      error: (error) => {
+        console.error('Error confirming ride', error);
+        window.alert('Error confirming ride: ' + error.message);
+      },
+    });
   }
 }

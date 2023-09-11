@@ -1,32 +1,68 @@
 <div class="container">
   <header class="jumbotron">
     <h1>Customer</h1>
-    <strong>{{ currentUser.id }}</strong> Profile
+    <strong>{{ currentUser.username }}</strong> Profile
   </header>
 
-  <google-map
-    height="600px"
-    width="100%"
-    [center]="center"
-    [zoom]="zoom"
-    (mapClick)="moveMap($event)"
-    (mapMousemove)="move($event)"
-  >
-    <map-marker
-      *ngFor="let marker of markers"
-      [position]="{ lat: marker.lat, lng: marker.lng }"
-      [options]="{
-        icon: marker.icon,
-        label: { text: marker.label, color: 'black' }
-      }"
-    >
-    </map-marker>
-  </google-map>
+  <div class="row">
+    <!-- Map Section -->
+    <div class="col-md-8">
+      <google-map
+        height="600px"
+        width="100%"
+        [center]="center"
+        [zoom]="zoom"
+        (mapClick)="moveMap($event)"
+        (mapMousemove)="move($event)"
+      >
+        <map-marker
+          *ngFor="let marker of markers"
+          [position]="{ lat: marker.lat, lng: marker.lng }"
+          [options]="{
+            icon: marker.icon,
+            label: { text: marker.label, color: 'black' }
+          }"
+        >
+        </map-marker>
+      </google-map>
 
-  <button class="btn btn-primary btn-lg" (click)="requestRide()">
-    Request Ride
-  </button>
+      <button class="btn btn-primary btn-lg mt-2 mb-4" (click)="requestRide()">
+        Request Ride
+      </button>
 
-  <div>Latitude: {{ display?.lat }}</div>
-  <div>Longitude: {{ display?.lng }}</div>
+      <div>Latitude: {{ display?.lat }}</div>
+      <div>Longitude: {{ display?.lng }}</div>
+    </div>
+
+    <!-- Rides Section -->
+    <div class="col-md-4 mt-4">
+      <h3>Your Rides</h3>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Driver</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let ride of userRides">
+            <td>{{ ride.driver.username }}</td>
+            <td>
+              {{ ride.status }}
+            </td>
+            <td>
+              <button
+                *ngIf="ride.status === 'ASSIGNED'"
+                class="btn btn-primary"
+                (click)="confirmRide(ride.id)"
+              >
+                Confirm
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
 </div>

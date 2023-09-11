@@ -11,6 +11,7 @@ export class BoardModeratorComponent implements OnInit {
   currentUser: any;
   driverDetails: any;
   isDriverAvailable: boolean = false;
+  driverRides: any[] = [];
 
   constructor(
     private storageService: StorageService,
@@ -19,7 +20,6 @@ export class BoardModeratorComponent implements OnInit {
 
   toggleDriverStatus() {
     this.isDriverAvailable = !this.isDriverAvailable;
-
     // Update status in backend
     this.userService
       .toggleUserStatus(this.currentUser.id, this.isDriverAvailable)
@@ -28,7 +28,7 @@ export class BoardModeratorComponent implements OnInit {
           this.isDriverAvailable = response.is_active;
           console.log('Status updated successfully', response);
           window.alert('Status updated successfully');
-          // Optionally, you can update the UI based on the response
+          window.location.reload();
         },
         error: (error) => {
           console.error('Error updating status', error);
@@ -41,11 +41,20 @@ export class BoardModeratorComponent implements OnInit {
 
   ngOnInit(): void {
     this.currentUser = this.storageService.getUser();
+    // Fetch the rides assigned to the driver
+    this.userService.getDriverRides(this.currentUser.id).subscribe({
+      next: (rides) => {
+        this.driverRides = rides;
+      },
+      error: (error) => {
+        console.error('Error fetching assigned rides', error);
+      },
+    });
+
+    // Fetch the driver details
     this.userService.getUserDetails(this.currentUser.id).subscribe({
       next: (details) => {
-        console.log('Received details:', details);
         this.driverDetails = details;
-
         // Add a new marker based on the received driverDetails
         if (details.latitude && details.longitude) {
           const newMarker = {
@@ -53,11 +62,9 @@ export class BoardModeratorComponent implements OnInit {
             lng: parseFloat(details.longitude),
           };
           this.markerPositions.push(newMarker);
-
-          // Update the center and possibly zoom level
+          // Update the center and zoom level
           this.center = newMarker;
-          this.zoom = 16; // You can set the zoom level as needed
-
+          this.zoom = 16;
           // Update isDriverAvailable based on details received
           this.isDriverAvailable = details.active;
         }
@@ -78,5 +85,20 @@ export class BoardModeratorComponent implements OnInit {
     if (event.latLng != null) {
       this.markerPositions.push(event.latLng.toJSON());
     }
+  }
+
+  confirmRide(rideId: number) {
+    this.userService.confirmDriverRide(rideId).subscribe({
+      next: (response) => {
+        console.log('Ride confirmed successfully', response);
+        window.alert('Ride confirmed successfully');
+        // Reload the current page after confirming the ride
+        window.location.reload();
+      },
+      error: (error) => {
+        console.error('Error confirming ride', error);
+        window.alert('Error confirming ride: ' + error.message);
+      },
+    });
   }
 }
