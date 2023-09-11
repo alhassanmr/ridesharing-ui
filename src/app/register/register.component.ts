@@ -19,18 +19,18 @@ export class RegisterComponent {
   constructor(private authService: AuthService) { }
 
   onSubmit(): void {
-    const { username, email, password } = this.form;
+    const { username, email, password, roleType } = this.form;
 
-    this.authService.register(username, email, password).subscribe({
-      next: data => {
+    this.authService.register(username, email, password, roleType).subscribe({
+      next: (data) => {
         console.log(data);
         this.isSuccessful = true;
         this.isSignUpFailed = false;
       },
-      error: err => {
+      error: (err) => {
         this.errorMessage = err.error.message;
         this.isSignUpFailed = true;
-      }
+      },
     });
   }
 }

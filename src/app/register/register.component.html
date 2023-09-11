@@ -73,6 +73,14 @@
           </div>
         </div>
       </div>
+      
+      <div class="form-group">
+        <label for="role">Role type</label>
+        <select [(ngModel)]="form.roleType" name="roleType" class="form-control">
+          <option value="DRIVER">Driver</option>
+          <option value="CUSTOMER">Customer</option>
+        </select>
+      </div>
       <div class="form-group">
         <button class="btn btn-primary btn-block">Sign Up</button>
       </div>
